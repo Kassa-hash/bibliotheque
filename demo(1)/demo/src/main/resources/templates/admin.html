@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Gestion de Bibliothèque</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .menu-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            padding: 3rem;
+            max-width: 800px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+        }
+
+        .menu-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            animation: float 3s ease-in-out infinite;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .menu-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .menu-item {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            transition: left 0.6s;
+        }
+
+        .menu-item:hover::before {
+            left: 100%;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+
+        .menu-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+        }
+
+        .menu-item-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .menu-item-description {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        /* Specific colors for different menu items */
+        .menu-item:nth-child(1):hover { border-color: #3b82f6; }
+        .menu-item:nth-child(2):hover { border-color: #10b981; }
+        .menu-item:nth-child(3):hover { border-color: #f59e0b; }
+        .menu-item:nth-child(4):hover { border-color: #ef4444; }
+        .menu-item:nth-child(5):hover { border-color: #8b5cf6; }
+        .menu-item:nth-child(6):hover { border-color: #06b6d4; }
+
+        .footer {
+            margin-top: 3rem;
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .user-info {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .menu-container {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .menu-title {
+                font-size: 2rem;
+            }
+
+            .menu-item {
+                padding: 1.5rem 1rem;
+            }
+        }
+
+        /* Animation classes */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(102, 126, 234, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="menu-container fade-in">
+    <div class="menu-header">
+        <div class="logo pulse">📚</div>
+        <h1 class="menu-title">Gestion Bibliothèque</h1>
+        <p class="menu-subtitle">Sélectionnez une section à gérer</p>
+    </div>
+
+    <div class="menu-grid">
+        <div class="menu-item" onclick="navigateTo('livres')">
+            <span class="menu-icon">📖</span>
+            <h3 class="menu-item-title">Livres</h3>
+            <p class="menu-item-description">Gérer le catalogue des livres</p>
+            <span class="badge">245</span>
+        </div>
+
+        <div class="menu-item" onclick="navigateTo('exemplaires')">
+            <span class="menu-icon">📚</span>
+            <h3 class="menu-item-title">Exemplaires</h3>
+            <p class="menu-item-description">Administrer les exemplaires physiques</p>
+            <span class="badge">892</span>
+        </div>
+
+        <div class="menu-item" onclick="navigateTo('membres')">
+            <span class="menu-icon">👥</span>
+            <h3 class="menu-item-title">Membres</h3>
+            <p class="menu-item-description">Gérer les comptes utilisateurs</p>
+            <span class="badge">156</span>
+        </div>
+
+        <div class="menu-item" onclick="navigateTo('pret')">
+            <span class="menu-icon">📋</span>
+            <h3 class="menu-item-title">Prêts</h3>
+            <p class="menu-item-description">Suivre les prêts en cours</p>
+            <span class="badge">43</span>
+        </div>
+
+        <div class="menu-item" onclick="navigateTo('reservation')">
+            <span class="menu-icon">📅</span>
+            <h3 class="menu-item-title">Réservations</h3>
+            <p class="menu-item-description">Gérer les réservations</p>
+            <span class="badge">12</span>
+        </div>
+
+        <div class="menu-item" onclick="navigateTo('historiques')">
+            <span class="menu-icon">📈</span>
+            <h3 class="menu-item-title">Historiques</h3>
+            <p class="menu-item-description">Consulter les statistiques</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="user-info">
+            Connecté en tant que <strong>Administrateur</strong>
+        </div>
+        <button class="logout-btn" onclick="logout()">
+            🚪 Se déconnecter
+        </button>
+    </div>
+</div>
+
+<script>
+    // Navigation function
+    function navigateTo(section) {
+        // Animation effect
+        const item = event.currentTarget;
+        item.style.transform = 'scale(0.95)';
+
+        setTimeout(() => {
+            item.style.transform = 'scale(1)';
+
+            // Here you can redirect to the appropriate page
+            console.log(`Navigation vers: ${section}`);
+
+            // Example redirections (uncomment and modify as needed):
+            switch(section) {
+                case 'livres':
+                    // window.location.href = 'livres.html';
+                    alert('Redirection vers la gestion des livres');
+                    break;
+                case 'exemplaires':
+                    // window.location.href = 'exemplaires.html';
+                    alert('Redirection vers la gestion des exemplaires');
+                    break;
+                case 'membres':
+                    // window.location.href = 'membres.html';
+                    alert('Redirection vers la gestion des membres');
+                    break;
+                case 'pret':
+                    // window.location.href = 'prets.html';
+                    alert('Redirection vers la gestion des prêts');
+                    break;
+                case 'reservation':
+                    // window.location.href = 'reservations.html';
+                    alert('Redirection vers la gestion des réservations');
+                    break;
+                case 'historiques':
+                    // window.location.href = 'historiques.html';
+                    alert('Redirection vers les historiques');
+                    break;
+                default:
+                    alert('Section non trouvée');
+            }
+        }, 150);
+    }
+
+    // Logout function
+    function logout() {
+        if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+            console.log('Déconnexion...');
+            // window.location.href = 'login.html';
+            alert('Déconnexion réussie');
+        }
+    }
+
+    // Add entrance animations to menu items
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuItems = document.querySelectorAll('.menu-item');
+        menuItems.forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(30px)';
+
+            setTimeout(() => {
+                item.style.transition = 'all 0.6s ease-out';
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0)';
+            }, 200 + (index * 100));
+        });
+    });
+
+    // Add parallax effect on mouse move
+    document.addEventListener('mousemove', function(e) {
+        const container = document.querySelector('.menu-container');
+        const x = (e.clientX / window.innerWidth) * 5 - 2.5;
+        const y = (e.clientY / window.innerHeight) * 5 - 2.5;
+
+        container.style.transform = `translate(${x}px, ${y}px)`;
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        const menuItems = document.querySelectorAll('.menu-item');
+        let currentIndex = -1;
+
+        // Find currently focused item
+        menuItems.forEach((item, index) => {
+            if (item === document.activeElement || item.contains(document.activeElement)) {
+                currentIndex = index;
+            }
+        });
+
+        // Navigate with arrow keys
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            const nextIndex = (currentIndex + 1) % menuItems.length;
+            menuItems[nextIndex].focus();
+            menuItems[nextIndex].click();
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            const prevIndex = currentIndex > 0 ? currentIndex - 1 : menuItems.length - 1;
+            menuItems[prevIndex].focus();
+            menuItems[prevIndex].click();
+        }
+    });
+</script>
+</body>
+</html>

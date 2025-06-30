@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bibliothèque</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 3rem 2rem;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 50%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .logo::before {
+            content: "📚";
+            font-size: 2rem;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            opacity: 0.8;
+        }
+
+        .user-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .user-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem 1.5rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .user-card:hover::before {
+            left: 100%;
+        }
+
+        .user-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border-color: #667eea;
+        }
+
+        .admin-card {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+        }
+
+        .admin-card:hover {
+            border-color: #ff6b6b;
+            background: linear-gradient(135deg, #ff5252, #d32f2f);
+        }
+
+        .user-card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .user-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .user-card p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        .admin-card p {
+            opacity: 0.9;
+        }
+
+        .footer {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 2rem 1.5rem;
+            }
+
+            .user-options {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .user-card {
+                padding: 1.5rem 1rem;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="logo pulse"></div>
+    <h1>Bibliothèque</h1>
+    <div class="user-options">
+        <div class="user-card" onclick="selectUserType('user')">
+            <span class="user-card-icon">👤</span>
+            <h3>Utilisateur</h3>
+            <p>Rechercher et emprunter des livres, consulter votre historique</p>
+        </div>
+
+        <div class="user-card admin-card" onclick="selectUserType('admin')">
+            <span class="user-card-icon">⚙️</span>
+            <h3>Administrateur</h3>
+            <p>Gérer les collections, les utilisateurs et les statistiques</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Besoin d'aide ? <a href="#contact">Contactez-nous</a></p>
+    </div>
+</div>
+
+<script>
+    function selectUserType(type) {
+        // Animation de sélection
+        const card = event.currentTarget;
+        card.style.transform = 'scale(0.95)';
+
+        setTimeout(() => {
+            card.style.transform = 'scale(1)';
+
+            // Ici vous pouvez rediriger vers la page appropriée
+            if (type === 'admin') {
+                // Redirection vers la page admin
+                console.log('Redirection vers interface admin');
+                 window.location.href = '/admin';
+                alert('Redirection vers l\'interface administrateur');
+            } else {
+                // Redirection vers la page utilisateur
+                console.log('Redirection vers interface utilisateur');
+                window.location.href = '/utilisateur';
+                alert('Redirection vers l\'interface utilisateur');
+            }
+        }, 150);
+    }
+
+    // Animation d'entrée
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.querySelector('.container');
+        container.style.opacity = '0';
+        container.style.transform = 'translateY(30px)';
+
+        setTimeout(() => {
+            container.style.transition = 'all 0.6s ease-out';
+            container.style.opacity = '1';
+            container.style.transform = 'translateY(0)';
+        }, 100);
+    });
+
+    // Effet de parallaxe léger sur le mouvement de la souris
+    document.addEventListener('mousemove', function(e) {
+        const container = document.querySelector('.container');
+        const x = (e.clientX / window.innerWidth) * 10 - 5;
+        const y = (e.clientY / window.innerHeight) * 10 - 5;
+
+        container.style.transform = `translate(${x}px, ${y}px)`;
+    });
+</script>
+</body>
+</html>
