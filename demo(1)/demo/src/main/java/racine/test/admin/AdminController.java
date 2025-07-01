@@ -9,7 +9,7 @@ public class AdminController {
 
     @GetMapping("/admin")
     public String showAdminPage(Model model) {
-        // model.addAttribute("message", "Hello, World!");
+        model.addAttribute("message", "Hello, World!");
         return "admin"; // Nom du template (hello.html)
     }
 
