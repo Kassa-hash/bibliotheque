@@ -13,8 +13,9 @@ public class LivreService {
         this.livreRepository = livreRepository;
     }
 
-
     public List<Livre> getAllLivres() {
         return livreRepository.findAll();
     }
+
+    public Livre saveLivre(Livre livre) {return livreRepository.save(livre);}
 }
