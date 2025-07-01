@@ -1,4 +1,6 @@
 package racine.test.exemplaire;
 
-public interface ExemplaireRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ExemplaireRepository extends JpaRepository<Exemplaire,Long> {
 }
