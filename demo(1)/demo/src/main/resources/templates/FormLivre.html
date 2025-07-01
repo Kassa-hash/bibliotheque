@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un nouveau livre</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875em;
+        }
+        .required-field::after {
+            content: " *";
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Ajouter un nouveau livre</h2>
+
+    <!-- Affichage des erreurs globales -->
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <form th:action="@{/livres/ajouter}" method="post" th:object="${livre}">
+        <!-- Champ Titre -->
+        <div class="mb-3">
+            <label for="titre" class="form-label required-field">Titre du livre</label>
+            <input type="text" class="form-control" id="titre" th:field="*{titre}" required>
+            <div class="error-message" th:if="${#fields.hasErrors('titre')}" th:errors="*{titre}"></div>
+        </div>
+
+        <!-- Champ Nom -->
+        <div class="mb-3">
+            <label for="nom" class="form-label required-field">Nom</label>
+            <input type="text" class="form-control" id="nom" th:field="*{nom}" required>
+            <div class="error-message" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}"></div>
+        </div>
+
+        <!-- Champ Description -->
+        <div class="mb-3">
+            <label for="description" class="form-label required-field">Description</label>
+            <textarea class="form-control" id="description" th:field="*{description}" rows="3" required></textarea>
+            <div class="error-message" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+        </div>
+
+        <!-- Champ Auteur -->
+        <div class="mb-3">
+            <label for="auteur" class="form-label required-field">Auteur</label>
+            <select class="form-select" id="auteur" th:field="*{auteur}" required>
+                <option value="">Sélectionner un auteur</option>
+                <option th:each="auteur : ${auteurs}"
+                        th:value="${auteur.id}"
+                        th:text="${auteur.nom}"></option>
+            </select>
+            <div class="error-message" th:if="${#fields.hasErrors('auteur')}" th:errors="*{auteur}"></div>
+        </div>
+
+        <!-- Champ Type de livre -->
+        <div class="mb-3">
+            <label for="typelivre" class="form-label">Type de livre</label>
+            <select class="form-select" id="typelivre" th:field="*{typelivre}">
+                <option value="">Sélectionner un type</option>
+                <option th:each="type : ${types}"
+                        th:value="${type.id}"
+                        th:text="${type.libelle}"></option>
+            </select>
+        </div>
+
+
+
+        <!-- Champ Date d'édition -->
+        <div class="mb-3">
+            <label for="dateEdition" class="form-label required-field">Date d'édition</label>
+            <input type="date" class="form-control" id="dateEdition" th:field="*{dateEdition}" required>
+            <div class="error-message" th:if="${#fields.hasErrors('dateEdition')}" th:errors="*{dateEdition}"></div>
+        </div>
+
+        <!-- Champ ISBN -->
+        <div class="mb-3">
+            <label for="isbn" class="form-label required-field">ISBN</label>
+            <input type="text" class="form-control" id="isbn" th:field="*{isbn}" required>
+            <div class="error-message" th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}"></div>
+        </div>
+
+        <!-- Champ Tag -->
+        <div class="mb-3">
+            <label for="tag" class="form-label required-field">Tag</label>
+            <input type="text" class="form-control" id="tag" th:field="*{tag}" required>
+            <div class="error-message" th:if="${#fields.hasErrors('tag')}" th:errors="*{tag}"></div>
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-primary me-md-2">Enregistrer</button>
+            <a th:href="@{/livre}" class="btn btn-secondary">Annuler</a>
+        </div>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
