@@ -49,11 +49,11 @@ public class Pret {
         this.idPret = idPret;
     }
 
-    public Adherent getIdAdherent() {
+    public Adherent getAdherent() {
         return adherent;
     }
 
-    public void setIdAdherent(Adherent adherent) {
+    public void setAdherent(Adherent adherent) {
         this.adherent = adherent;
     }
 

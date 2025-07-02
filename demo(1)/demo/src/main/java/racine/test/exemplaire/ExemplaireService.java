@@ -22,4 +22,8 @@ public class ExemplaireService {
     public Optional<Exemplaire> getExemplairebyId(Long id) {
         return exemplaireRepository.findById(id);
     }
+
+    public Optional<Exemplaire> findByLivreIdAndNumero(Long livreId, Integer numero) {
+        return exemplaireRepository.findByLivreIdAndNumero(livreId, numero);
+    }
 }

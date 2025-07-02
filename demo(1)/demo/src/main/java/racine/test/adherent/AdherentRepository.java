@@ -3,6 +3,7 @@ package racine.test.adherent;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AdherentRepository extends JpaRepository<Adherent, Long> {
     List<Adherent> findByNomContainingOrPrenomContaining(String nom, String prenom);

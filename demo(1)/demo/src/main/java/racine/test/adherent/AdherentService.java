@@ -3,6 +3,7 @@ package racine.test.adherent;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AdherentService {
@@ -18,9 +19,10 @@ public class AdherentService {
         return adherentRepository.findAll();
     }
 
-    public Adherent getAdherentById(Long id) {
-        return adherentRepository.findById(id).orElse(null);
+    public Optional<Adherent> getAdherentById(Long id) {
+        return adherentRepository.findById(id);
     }
+
 
     public Adherent saveAdherent(Adherent adherent) {
         // You might want to add validation here

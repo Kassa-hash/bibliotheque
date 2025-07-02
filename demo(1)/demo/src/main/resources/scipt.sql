@@ -78,3 +78,13 @@ INSERT INTO adherent (email, fin_adhesion, nom, prenom, id_type_adherent) VALUES
 ('remi.blanc@email.com', '2024-05-31', 'Blanc', 'Remi', 1),
 ('caroline.leroux@email.com', '2024-11-30', 'Leroux', 'Caroline', 3),
 ('guillaume.henry@email.com', '2025-02-28', 'Henry', 'Guillaume', 1);
+
+-- On suppose que les livres avec id 1, 2 et 3 existent déjà dans la table `livre`.
+
+INSERT INTO exemplaire (numero, livre_id) VALUES
+('1', 7),
+('2', 12),
+('3', 11),
+('4', 8),
+('5', 9),
+('6', 10);
