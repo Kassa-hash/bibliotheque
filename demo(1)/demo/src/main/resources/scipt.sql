@@ -47,7 +47,8 @@ INSERT INTO livre (titre, description, nom, auteur_id, typelivre_id, date_editio
 ('Harry Potter à l''école des sorciers', 'Premier tome des aventures du jeune sorcier', 'Harry Potter 1', 3, 3, '1997-06-26', '978-2070518425', 'magie'),
 ('Le Trône de Fer', 'Premier tome de la saga du Trône de Fer', 'AGOT', 4, 3, '1996-08-01', '978-2253150941', 'médiéval'),
 ('Le Seigneur des Anneaux', 'La communauté de l''anneau', 'LOTR 1', 5, 3, '1954-07-29', '978-2266282362', 'fantasy'),
-('Le Crime de l''Orient-Express', 'Une célèbre enquête d''Hercule Poirot', 'Orient-Express', 6, 4, '1934-01-01', '978-2253010696', 'enquête'),
+('Le Crime de l''Orient-Express',
+ (*ù'Une célèbre enquête d''Hercule Poirot', 'Orient-Express', 6, 4, '1934-01-01', '978-2253010696', 'enquête'),
 
 
 -- Suppression des données existantes (optionnel)
