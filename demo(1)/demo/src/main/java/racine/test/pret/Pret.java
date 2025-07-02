@@ -73,11 +73,11 @@ public class Pret {
         this.dateLimite = dateLimite;
     }
 
-    public Exemplaire getIdExemplaire() {
+    public Exemplaire getExemplaire() {
         return exemplaire;
     }
 
-    public void setIdExemplaire(Exemplaire exemplaire) {
+    public void setExemplaire(Exemplaire exemplaire) {
         this.exemplaire = exemplaire;
     }
 }

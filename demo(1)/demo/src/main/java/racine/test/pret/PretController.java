@@ -44,6 +44,13 @@ public class PretController {
         return "prets";
     }
 
+    @GetMapping("/listePret")
+    public String listePret(Model model){
+        List<Pret> prets=pretService.getAllPrets();
+        model.addAttribute("prets",prets);
+        return "listePrets";
+    }
+
     @PostMapping("/prets/nouveau")
     public String enregistrerPret(@RequestParam Long idAdherent,
                                   @RequestParam Long idExemplaire,
@@ -85,7 +92,7 @@ public class PretController {
             // Création du prêt
             Pret pret = new Pret();
             pret.setAdherent(adherentOpt.get());
-            pret.setIdExemplaire(exemplaire);
+            pret.setExemplaire(exemplaire);
             pret.setDatePret(datePretDate);
             pret.setDateLimite(dateLimite);
 
