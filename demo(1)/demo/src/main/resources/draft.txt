@@ -1,0 +1,5 @@
+                <td>
+                    <span th:text="${pret.exemplaire?.livre?.titre ?: 'Titre non disponible'}">Titre du livre</span>
+                    <br>
+                    <small th:text="'Exemplaire #' + ${pret.exemplaire?.idExemplaire ?: 'N/A'}">Exemplaire #1</small>
+                </td>
