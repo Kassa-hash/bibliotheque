@@ -3,3 +3,76 @@
                     <br>
                     <small th:text="'Exemplaire #' + ${pret.exemplaire?.idExemplaire ?: 'N/A'}">Exemplaire #1</small>
                 </td>
+
+
+                 @GetMapping("/pret/retour/{id}")
+                    public String traiterRetourPret(@PathVariable Long id,
+                                                    @RequestParam(required = false) String dateRendu,
+                                                    RedirectAttributes redirectAttributes) {
+
+                        try {
+                            // Récupération du prêt
+                            Optional<Pret> pretOpt = pretService.getPretById(id);
+                            if (!pretOpt.isPresent()) {
+                                redirectAttributes.addFlashAttribute("errorMessage", "Prêt introuvable avec l'ID: " + id);
+                                return "redirect:/listePret";
+                            }
+
+                            Pret pret = pretOpt.get();
+
+                            // Validation de la date de rendu
+                            Date dateRenduDate;
+                            if (dateRendu != null && !dateRendu.trim().isEmpty()) {
+                                try {
+                                    LocalDate dateRenduLocal = LocalDate.parse(dateRendu);
+                                    dateRenduDate = Date.from(dateRenduLocal.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                                } catch (Exception e) {
+                                    redirectAttributes.addFlashAttribute("errorMessage", "Format de date invalide: " + dateRendu);
+                                    return "redirect:/listePret";
+                                }
+                            } else {
+                                // Si aucune date n'est fournie, utiliser la date actuelle
+                                dateRenduDate = new Date();
+                            }
+
+                            // Mise à jour du prêt avec la date de rendu
+                            pret.setDateRendu(dateRenduDate);
+
+                            // Sauvegarde du prêt mis à jour
+                            pretService.savePret(pret);
+
+                            // Libération de l'exemplaire (si nécessaire)
+                            Exemplaire exemplaire = pret.getExemplaire();
+                            if (exemplaire != null) {
+                                exemplaire.setDisponible(true); // Supposons qu'il y ait un champ disponible
+                                exemplaireService.saveExemplaire(exemplaire);
+                            }
+
+                            // Message de succès avec détails
+                            String adherentNom = pret.getAdherent() != null ?
+                                    pret.getAdherent().getNom() + " " + pret.getAdherent().getPrenom() : "Inconnu";
+
+                            // Calcul du retard éventuel
+                            LocalDate dateLimiteLocal = pret.getDateLimite().toInstant()
+                                    .atZone(ZoneId.systemDefault()).toLocalDate();
+                            LocalDate dateRenduLocal = dateRenduDate.toInstant()
+                                    .atZone(ZoneId.systemDefault()).toLocalDate();
+
+                            String messageRetard = "";
+                            if (dateRenduLocal.isAfter(dateLimiteLocal)) {
+                                long joursRetard = java.time.temporal.ChronoUnit.DAYS.between(dateLimiteLocal, dateRenduLocal);
+                                messageRetard = " (Retard de " + joursRetard + " jour(s))";
+                            }
+
+                            redirectAttributes.addFlashAttribute("successMessage",
+                                    "Retour du prêt #" + id + " enregistré avec succès pour " + adherentNom +
+                                            " le " + dateRenduLocal.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
+                                            messageRetard);
+
+                        } catch (Exception e) {
+                            redirectAttributes.addFlashAttribute("errorMessage",
+                                    "Erreur lors du traitement du retour: " + e.getMessage());
+                        }
+
+                        return "redirect:/listePret";
+                    }
