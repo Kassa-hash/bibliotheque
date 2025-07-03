@@ -107,4 +107,27 @@ public class PretController {
             return "redirect:/prets";
         }
     }
+
+
+
+    /**
+     * Affiche les détails d'un prêt spécifique
+     */
+    @GetMapping("/pret/details/{id}")
+    public String detailsPret(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        Optional<Pret> pretOpt = pretService.getPretById(id);
+
+        if (!pretOpt.isPresent()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Prêt introuvable");
+            return "redirect:/listePret";
+        }
+
+        model.addAttribute("pret", pretOpt.get());
+        return "detailsPret"; // Nom de la vue pour afficher les détails
+    }
+
+    /**
+     * Annule un prêt (si nécessaire)
+     */
+
 }

@@ -12,7 +12,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             background-color: white;
             padding: 20px;
@@ -90,9 +90,64 @@
             background-color: #45a049;
         }
 
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 12px;
+            margin: 2px;
+        }
+
+        .btn-blue {
+            background-color: #2196F3;
+        }
+
+        .btn-blue:hover {
+            background-color: #1976D2;
+        }
+
+        .btn-orange {
+            background-color: #ff9800;
+        }
+
+        .btn-orange:hover {
+            background-color: #e68900;
+        }
+
         .actions {
             text-align: center;
             margin-bottom: 20px;
+        }
+
+        .date-input {
+            padding: 5px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-right: 5px;
+            width: 130px;
+        }
+
+        .date-input:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        .action-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .action-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .date-input {
+                width: 100%;
+                margin-bottom: 5px;
+            }
         }
     </style>
 </head>
@@ -133,8 +188,18 @@
                           class="status-normal">En cours</span>
                 </td>
                 <td>
-                    <a th:href="@{/pret/details/{id}(id=${pret.idPret})}" class="btn" style="padding: 5px 10px; font-size: 12px;">Détails</a>
-                    <a th:href="@{/pret/retour/{id}(id=${pret.idPret})}" class="btn" style="padding: 5px 10px; font-size: 12px; background-color: #2196F3;">Retour</a>
+                    <div class="action-group">
+                        <input type="date"
+                               class="date-input"
+                               th:id="'dateRendu-' + ${pret.idPret}"
+                               th:name="'dateRendu-' + ${pret.idPret}"
+                               placeholder="Date de rendu"
+                               title="Sélectionner la date de rendu">
+
+                        <a th:href="@{/pret/retour/{id}(id=${pret.idPret})}"
+                           class="btn btn-small btn-blue"
+                           onclick="return confirmerRendu(this)">Rendre</a>
+                    </div>
                 </td>
             </tr>
             </tbody>
@@ -150,5 +215,55 @@
         <p>Total des prêts : <span th:text="${prets != null ? prets.size() : 0}">0</span></p>
     </div>
 </div>
+
+<script>
+    function confirmerRendu(lien) {
+        const row = lien.closest('tr');
+        const pretId = lien.href.split('/').pop();
+        const dateInput = document.getElementById('dateRendu-' + pretId);
+        const dateRendu = dateInput.value;
+
+        if (!dateRendu) {
+            alert('Veuillez sélectionner une date de rendu avant de valider le retour.');
+            dateInput.focus();
+            return false;
+        }
+
+        // Vérifier que la date n'est pas dans le futur
+        const dateSelectionnee = new Date(dateRendu);
+        const aujourdhui = new Date();
+        aujourdhui.setHours(23, 59, 59, 999); // Fin de journée
+
+        if (dateSelectionnee > aujourdhui) {
+            if (!confirm('La date sélectionnée est dans le futur. Voulez-vous continuer ?')) {
+                return false;
+            }
+        }
+
+        // Ajouter la date de rendu à l'URL
+        const url = new URL(lien.href, window.location.origin);
+        url.searchParams.set('dateRendu', dateRendu);
+        lien.href = url.toString();
+
+        const adherentNom = row.cells[1].textContent.trim();
+        return confirm(`Confirmer le retour du prêt #${pretId} pour ${adherentNom} avec la date de rendu : ${dateRendu} ?`);
+    }
+
+    // Initialiser les dates d'aujourd'hui par défaut
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date().toISOString().split('T')[0];
+        const dateInputs = document.querySelectorAll('.date-input');
+
+        dateInputs.forEach(input => {
+            // Optionnel : définir la date d'aujourd'hui par défaut
+            // input.value = today;
+
+            // Définir la date maximale à aujourd'hui + 1 an
+            const maxDate = new Date();
+            maxDate.setFullYear(maxDate.getFullYear() + 1);
+            input.max = maxDate.toISOString().split('T')[0];
+        });
+    });
+</script>
 </body>
 </html>
