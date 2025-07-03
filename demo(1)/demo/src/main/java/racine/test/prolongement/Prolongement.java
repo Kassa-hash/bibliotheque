@@ -1,4 +1,4 @@
 package racine.test.prolongement;
 
-public class Reservation {
+public class Prolongement {
 }

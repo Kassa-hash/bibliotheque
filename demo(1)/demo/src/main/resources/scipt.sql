@@ -88,3 +88,8 @@ INSERT INTO exemplaire (numero, livre_id) VALUES
 ('4', 8),
 ('5', 9),
 ('6', 10);
+
+INSERT INTO reservation (date_demande, date_pret, id_adherent, id_exemplaire) VALUES
+('2025-07-01', '2025-07-02', 16, 7),
+('2025-07-02', '2025-07-03', 20, 8);
+
