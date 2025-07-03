@@ -93,3 +93,10 @@ INSERT INTO reservation (date_demande, date_pret, id_adherent, id_exemplaire) VA
 ('2025-07-01', '2025-07-02', 16, 7),
 ('2025-07-02', '2025-07-03', 20, 8);
 
+INSERT INTO penalite (date_fin, adherent_id) VALUES
+('2025-07-15',  16),
+('2025-07-20',  20);
+
+
+
+

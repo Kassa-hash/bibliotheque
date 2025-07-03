@@ -28,9 +28,17 @@ public class Adherent {
     @JoinColumn(name = "id_type_adherent", nullable = false)
     private TypeAdherent typeAdherent;
 
-    // Constructors
-    public Adherent() {
+    private int cota;
+
+    public int getCota() {
+        return cota;
     }
+
+    public void setCota(int cota) {
+        this.cota = cota;
+    }
+// Constructors
+
 
     public Adherent(String nom, String prenom, String email, LocalDate finAdhesion, TypeAdherent typeAdherent) {
         this.nom = nom;
