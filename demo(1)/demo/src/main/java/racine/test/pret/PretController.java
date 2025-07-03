@@ -101,8 +101,6 @@ public class PretController {
                 return "redirect:/prets";
             }
 
-            
-
             // Récupération de l'exemplaire par livre et numéro
             Optional<Exemplaire> exemplaireOpt = exemplaireService.findByLivreIdAndNumero(idExemplaire, num);
             if (!exemplaireOpt.isPresent()) {

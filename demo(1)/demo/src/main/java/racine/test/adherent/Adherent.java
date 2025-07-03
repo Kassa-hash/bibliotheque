@@ -39,7 +39,9 @@ public class Adherent {
     }
 // Constructors
 
+public  Adherent(){
 
+}
     public Adherent(String nom, String prenom, String email, LocalDate finAdhesion, TypeAdherent typeAdherent) {
         this.nom = nom;
         this.prenom = prenom;
