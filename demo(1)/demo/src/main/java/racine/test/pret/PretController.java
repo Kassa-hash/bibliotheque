@@ -11,6 +11,8 @@ import racine.test.livre.Livre;
 import racine.test.livre.LivreService;
 import racine.test.exemplaire.Exemplaire;
 import racine.test.exemplaire.ExemplaireService;
+import racine.test.penalite.Penalite;
+import racine.test.penalite.PenaliteService;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -25,13 +27,17 @@ public class PretController {
     private final AdherentService adherentService;
     private final LivreService livreService;
     private final ExemplaireService exemplaireService;
+    private final PenaliteService penaliteService;
+
+
 
     public PretController(PretService pretService, AdherentService adherentService,
-                          LivreService livreService, ExemplaireService exemplaireService) {
+                          LivreService livreService, ExemplaireService exemplaireService, PenaliteService penaliteService) {
         this.pretService = pretService;
         this.adherentService = adherentService;
         this.livreService = livreService;
         this.exemplaireService = exemplaireService;
+        this.penaliteService = penaliteService;
     }
 
     @GetMapping("/prets")
@@ -67,10 +73,35 @@ public class PretController {
 
             // Récupération de l'adhérent
             Optional<Adherent> adherentOpt = adherentService.getAdherentById(idAdherent);
+            Adherent adherent = adherentOpt.get();
             if (!adherentOpt.isPresent()) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Adhérent introuvable");
                 return "redirect:/prets";
             }
+
+            if (adherent.getFinAdhesion().isBefore(LocalDate.now()))
+            {
+                redirectAttributes.addFlashAttribute("errorMessage", "Adhésion éxpirèe, cet adhérent doit se réinscrire");
+                return "redirect:/prets";
+            }
+
+            List<Penalite> penalites=penaliteService.getAllPenalites();
+
+            for (Penalite p : penalites) {
+                if (p.getAdherent().getId() == adherent.getId()) {
+                    if (LocalDate.now().isBefore(p.getDateFin())) {
+                        redirectAttributes.addFlashAttribute("errorMessage", "Adhérent encore pénalisé");
+                        return "redirect:/prets";
+                    }
+                }
+            }
+
+            if (adherent.getTypeAdherent().getCota()<= adherent.getCota()){
+                redirectAttributes.addFlashAttribute("errorMessage", "Vous avez déja atteint le nombre de livre que vous pouvez preter");
+                return "redirect:/prets";
+            }
+
+            
 
             // Récupération de l'exemplaire par livre et numéro
             Optional<Exemplaire> exemplaireOpt = exemplaireService.findByLivreIdAndNumero(idExemplaire, num);
@@ -98,6 +129,9 @@ public class PretController {
 
             // Enregistrement du prêt
             Pret pretEnregistre = pretService.savePret(pret);
+            int cota=adherent.getCota();
+            cota=cota++;
+            adherent.setCota(cota);
 
             redirectAttributes.addFlashAttribute("successMessage", "Prêt enregistré avec succès !");
             return "redirect:/prets";
