@@ -199,6 +199,11 @@
                         <a th:href="@{/pret/retour/{id}(id=${pret.idPret})}"
                            class="btn btn-small btn-blue"
                            onclick="return confirmerRendu(this)">Rendre</a>
+
+                        <a th:href="@{/nouveauProlongement/{id}(id=${pret.idPret})}"
+                           class="btn btn-small btn-blue"
+                           onclick="return confirmerProlongement(this)">Prolonger</a>
+
                     </div>
                 </td>
             </tr>
@@ -229,6 +234,8 @@
             return false;
         }
 
+
+
         // Vérifier que la date n'est pas dans le futur
         const dateSelectionnee = new Date(dateRendu);
         const aujourdhui = new Date();
@@ -240,6 +247,8 @@
             }
         }
 
+
+
         // Ajouter la date de rendu à l'URL
         const url = new URL(lien.href, window.location.origin);
         url.searchParams.set('dateRendu', dateRendu);
@@ -248,6 +257,27 @@
         const adherentNom = row.cells[1].textContent.trim();
         return confirm(`Confirmer le retour du prêt #${pretId} pour ${adherentNom} avec la date de rendu : ${dateRendu} ?`);
     }
+
+    function confirmerProlongement(lien) {
+    const row = lien.closest('tr');
+    const pretId = lien.href.split('/').pop();
+    const dateInput = document.getElementById('dateRendu-' + pretId);
+    const dateRendu = dateInput.value;
+
+    if (!dateRendu) {
+        alert('Veuillez sélectionner une date de rendu avant de demander une prolongation.');
+        dateInput.focus();
+        return false;
+    }
+
+    // Ajouter la date de rendu à l'URL comme vous le souhaitez
+    const url = new URL(lien.href, window.location.origin);
+    url.searchParams.set('dateRendu', dateRendu);
+    lien.href = url.toString();
+
+    const adherentNom = row.cells[1].textContent.trim();
+    return confirm(`Confirmer la demande de prolongation pour le prêt #${pretId} (${adherentNom}) avec date de rendu : ${dateRendu} ?`);
+}
 
     // Initialiser les dates d'aujourd'hui par défaut
     document.addEventListener('DOMContentLoaded', function() {
