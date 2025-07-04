@@ -1,7 +1,5 @@
 package racine.test.adherent;
 
-
-
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
@@ -28,7 +26,20 @@ public class Adherent {
     @JoinColumn(name = "id_type_adherent", nullable = false)
     private TypeAdherent typeAdherent;
 
-    private int cota;
+    // Suppression de @Transient pour persister le cota en base
+    @Column(name = "cota", nullable = false)
+    private int cota = 0; // Valeur par défaut
+
+    @Column(name = "dateDeNaissance", nullable = true)
+    private LocalDate dateDeNaissance;
+
+    public LocalDate getDateDeNaissance() {
+        return dateDeNaissance;
+    }
+
+    public void setDateDeNaissance(LocalDate dateDeNaissance) {
+        this.dateDeNaissance = dateDeNaissance;
+    }
 
     public int getCota() {
         return cota;
@@ -37,17 +48,18 @@ public class Adherent {
     public void setCota(int cota) {
         this.cota = cota;
     }
-// Constructors
 
-public  Adherent(){
+    // Constructors
+    public Adherent(){
+    }
 
-}
     public Adherent(String nom, String prenom, String email, LocalDate finAdhesion, TypeAdherent typeAdherent) {
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
         this.finAdhesion = finAdhesion;
         this.typeAdherent = typeAdherent;
+        this.cota = 0; // Initialisation par défaut
     }
 
     // Getters and Setters

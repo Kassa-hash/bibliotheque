@@ -117,6 +117,21 @@
                                 </div>
                             </div>
 
+                            <!-- Type de prêt -->
+                            <div class="col-md-6">
+                                <label for="typePret" class="form-label required-field">Type de prêt</label>
+                                <select class="form-select" id="typePret" name="idTypePret" required>
+                                    <option value="">-- Sélectionnez un type --</option>
+                                    <option th:each="typePret : ${typePrets}"
+                                            th:value="${typePret.id}"
+                                            th:text="${typePret.libelle}">
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Veuillez sélectionner un type de prêt.
+                                </div>
+                            </div>
+
                             <!-- Numéro exemplaire -->
                             <div class="col-md-6">
                                 <label for="num" class="form-label required-field">Numéro de l'exemplaire</label>
