@@ -37,4 +37,8 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
+    public List<Reservation> getReservationByIdExemplaire(Long idExemplaire) {
+        return reservationRepository.findByExemplaireId(idExemplaire);
+    }
+
 }

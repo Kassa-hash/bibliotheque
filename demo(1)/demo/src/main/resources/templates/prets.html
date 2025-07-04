@@ -97,9 +97,9 @@
                                 <label for="exemplaire" class="form-label required-field">Livre</label>
                                 <select class="form-select" id="exemplaire" name="idExemplaire" required>
                                     <option value="">-- Sélectionnez un livre --</option>
-                                    <option th:each="livre : ${livres}"
-                                            th:value="${livre.id}"
-                                            th:text="${livre.titre}">
+                                    <option th:each="exemplaire : ${exemplaires}"
+                                            th:value="${exemplaire.id}"
+                                            th:text="${exemplaire.livre.titre}">
                                     </option>
                                 </select>
                                 <small class="text-muted">Seuls les exemplaires disponibles sont affichés</small>

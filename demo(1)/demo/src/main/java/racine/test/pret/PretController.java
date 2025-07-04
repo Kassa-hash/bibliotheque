@@ -13,6 +13,8 @@ import racine.test.exemplaire.Exemplaire;
 import racine.test.exemplaire.ExemplaireService;
 import racine.test.penalite.Penalite;
 import racine.test.penalite.PenaliteService;
+import racine.test.reservation.Reservation;
+import racine.test.reservation.ReservationService;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -29,17 +31,17 @@ public class PretController {
     private final ExemplaireService exemplaireService;
     private final PenaliteService penaliteService;
     private final TypePretService typePretService;
-
-
+    private final ReservationService reservationService;
 
     public PretController(PretService pretService, AdherentService adherentService,
-                          LivreService livreService, ExemplaireService exemplaireService, PenaliteService penaliteService, TypePretService typePretService) {
+                          LivreService livreService, ExemplaireService exemplaireService, PenaliteService penaliteService, TypePretService typePretService, ReservationService reservationService) {
         this.pretService = pretService;
         this.adherentService = adherentService;
         this.livreService = livreService;
         this.exemplaireService = exemplaireService;
         this.penaliteService = penaliteService;
         this.typePretService = typePretService;
+        this.reservationService = reservationService;
     }
 
     @GetMapping("/prets")
@@ -48,9 +50,10 @@ public class PretController {
         List<Adherent> adherents = adherentService.getAllAdherents();
         List<Livre> livres = livreService.getAllLivres();
         List<TypePret> typePrets=typePretService.getAllTypePrets();
+        List<Exemplaire> exemplaires=exemplaireService.getAllExemplaire();
 
         model.addAttribute("adherents", adherents);
-        model.addAttribute("livres", livres);
+        model.addAttribute("exemplaires", exemplaires);
         model.addAttribute("typePrets" , typePrets);
         return "prets";
     }
@@ -127,8 +130,6 @@ public class PretController {
             LocalDate datePretLocal = LocalDate.parse(datePret);
             Date datePretDate = Date.from(datePretLocal.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-
-
             // Création du prêt
             Pret pret = new Pret();
             pret.setAdherent(adherent);
@@ -137,7 +138,7 @@ public class PretController {
 
             pret.setTypepret(typePret);
 
-            if(pret.getTypepret().getId()==1)
+            if(pret.getTypepret().getId()==2)
             {
                 double nbjours =adherent.getTypeAdherent().getCotisation();
                Long nb=Math.round(nbjours);
@@ -146,11 +147,20 @@ public class PretController {
                 pret.setDateLimite(dateLimite);
             }
 
-            if(pret.getTypepret().getId()==2)
+            if(pret.getTypepret().getId()==1)
             {
                 LocalDate dateLimiteLocal = datePretLocal.plusDays(1);
                 Date dateLimite = Date.from(dateLimiteLocal.atStartOfDay(ZoneId.systemDefault()).toInstant());
                 pret.setDateLimite(dateLimite);
+            }
+
+            List<Reservation> reservations=reservationService.getReservationByIdExemplaire(idExemplaire);
+            for (int i = 0; i <reservations.size() ; i++) {
+                if (reservations.get(i).getDatePret().isBefore(datePretLocal));
+                {
+                    redirectAttributes.addFlashAttribute("errorMessage", "Ce livre est déja reservé");
+                    return "redirect:/prets";
+                }
             }
 
             // Enregistrement du prêt

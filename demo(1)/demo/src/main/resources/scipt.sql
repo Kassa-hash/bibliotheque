@@ -102,5 +102,8 @@ INSERT INTO type_pret (id, libelle) VALUES
 (2, 'Domicile');
 
 
+UPDATE adherent
+SET cota = 15
+WHERE id = 40;
 
 

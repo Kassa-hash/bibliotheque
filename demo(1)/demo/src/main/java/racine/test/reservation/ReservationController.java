@@ -45,9 +45,9 @@ public class ReservationController {
     {
         model.addAttribute("reservation",new Reservation());
         List<Adherent> adherents = adherentService.getAllAdherents();
-        List<Livre> livres = livreService.getAllLivres();
+        List<Exemplaire> exemplaires=exemplaireService.getAllExemplaire();
         model.addAttribute("adherents", adherents);
-        model.addAttribute("livres", livres);
+        model.addAttribute("exemplaires",exemplaires);
         return "formReservation";
     }
 

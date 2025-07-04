@@ -82,6 +82,7 @@ public class RenduController {
             penaliteService.createPenalite(penalite);
         }
 
+        renduService.createRendu(rendu);
         adherentService.updateCota(adherent.getId(),cotaActuel-1);
         redirectAttributes.addFlashAttribute("success", "Rendu enregistré avec succès pour le prêt #" + idPret);
         return "redirect:/prets"; // Rediriger vers la page liste après le rendu
