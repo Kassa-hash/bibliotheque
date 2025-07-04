@@ -10,8 +10,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import racine.test.pret.Pret;
 import racine.test.pret.PretRepository;
 import racine.test.rendu.Rendu;
+import racine.test.reservation.Reservation;
+import racine.test.reservation.ReservationService;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +24,8 @@ public class ProlongementController {
 
     private final ProlongementService prolongementService;
     private final PretRepository pretRepository;
+    @Autowired
+    private ReservationService reservationService;
 
     @Autowired
     public ProlongementController(ProlongementService prolongementService,PretRepository pretRepository) {
@@ -44,6 +49,19 @@ public class ProlongementController {
        Prolongement prolongement=new Prolongement();
         prolongement.setPret(pret);
         prolongement.setNouvelleDate(dateRendu);
+
+        LocalDate dateConvertie = pret.getDatePret().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        List<Reservation> reservations=reservationService.getReservationByIdExemplaire(pret.getExemplaire().getId());
+        for (int i = 0; i <reservations.size() ; i++) {
+            if (reservations.get(i).getDatePret().isBefore(dateConvertie));
+            {
+                redirectAttributes.addFlashAttribute("errorMessage", "Ce livre est déja reservé");
+                return "redirect:/prets";
+            }
+        }
 
         prolongementService.createProlongement(prolongement);
         redirectAttributes.addFlashAttribute("success", "Rendu enregistré avec succès pour le prêt #" + idPret);

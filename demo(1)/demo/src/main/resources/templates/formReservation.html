@@ -5,42 +5,75 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Formulaire de Réservation</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .required-field::after {
+      content: " *";
+      color: red;
+    }
+    .form-container {
+      background: #f8f9fa;
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+  </style>
 </head>
-<body>
+<body class="form-container">
 <div class="container mt-5">
   <h1 class="mb-4">Formulaire de Réservation</h1>
 
+  <!-- Messages d'erreur -->
+  <div class="row" th:if="${errorMessage}">
+    <div class="col-12">
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
   <form th:action="@{/reserverLivre}" th:object="${reservation}" method="post">
     <div class="mb-3">
-      <label for="adherent" class="form-label">Adhérent</label>
-      <select class="form-select" id="adherent" th:field="*{adherent}">
+      <label for="adherent" class="form-label required-field">Adhérent</label>
+      <select class="form-select" id="adherent" th:field="*{adherent}" required>
         <option value="">-- Sélectionnez un adhérent --</option>
         <option th:each="adherent : ${adherents}"
                 th:value="${adherent.id}"
                 th:text="${adherent.nom + ' ' + adherent.prenom}">
         </option>
       </select>
+      <div class="invalid-feedback">
+        Veuillez sélectionner un adhérent.
+      </div>
     </div>
 
     <div class="mb-3">
-      <label for="exemplaire" class="form-label">Livre</label>
-      <select class="form-select" id="exemplaire" th:field="*{exemplaire}">
+      <label for="exemplaire" class="form-label required-field">Livre</label>
+      <select class="form-select" id="exemplaire" th:field="*{exemplaire}" required>
         <option value="">-- Sélectionnez un livre --</option>
         <option th:each="exemplaire : ${exemplaires}"
                 th:value="${exemplaire.id}"
                 th:text="${exemplaire.livre.titre}">
         </option>
       </select>
+      <div class="invalid-feedback">
+        Veuillez sélectionner un livre.
+      </div>
     </div>
 
     <div class="mb-3">
-      <label for="dateDemande" class="form-label">Date de demande</label>
-      <input type="date" class="form-control" id="dateDemande" th:field="*{dateDemande}">
+      <label for="dateDemande" class="form-label required-field">Date de demande</label>
+      <input type="date" class="form-control" id="dateDemande" th:field="*{dateDemande}" required>
+      <div class="invalid-feedback">
+        Veuillez saisir une date valide.
+      </div>
     </div>
 
     <div class="mb-3">
-      <label for="datePret" class="form-label">Date de prêt</label>
-      <input type="date" class="form-control" id="datePret" th:field="*{datePret}">
+      <label for="datePret" class="form-label required-field">Date de prêt</label>
+      <input type="date" class="form-control" id="datePret" th:field="*{datePret}" required>
+      <div class="invalid-feedback">
+        Veuillez saisir une date valide.
+      </div>
     </div>
 
     <button type="submit" class="btn btn-primary">Enregistrer la réservation</button>
@@ -48,5 +81,34 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Validation du formulaire côté client
+  document.querySelector('form').addEventListener('submit', function(e) {
+    const form = this;
+    const inputs = form.querySelectorAll('input[required], select[required]');
+    let isValid = true;
+
+    inputs.forEach(input => {
+      if (!input.value.trim()) {
+        input.classList.add('is-invalid');
+        isValid = false;
+      } else {
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+      }
+    });
+
+    if (!isValid) {
+      e.preventDefault();
+      alert('Veuillez remplir tous les champs obligatoires.');
+    }
+  });
+
+  // Définir la date d'aujourd'hui par défaut
+  document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('dateDemande').value = today;
+  });
+</script>
 </body>
 </html>
