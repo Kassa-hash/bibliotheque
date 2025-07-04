@@ -97,6 +97,10 @@ INSERT INTO penalite (date_fin, adherent_id) VALUES
 ('2025-07-15',  16),
 ('2025-07-20',  20);
 
+INSERT INTO type_pret (id, libelle) VALUES
+(1, 'Sur place'),
+(2, 'Domicile');
+
 
 
 

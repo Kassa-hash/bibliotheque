@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import racine.test.adherent.Adherent;
 import racine.test.exemplaire.Exemplaire;
 
+import java.lang.reflect.Type;
 import java.util.Date;
 
 @Entity
@@ -21,6 +22,10 @@ public class Pret {
 
     @Column(name = "datePret", nullable = false)
     private Date datePret;
+
+    @ManyToOne
+    @JoinColumn(name = "idType", nullable = true)
+    private TypePret typepret;
 
     @Column(name = "dateLimite", nullable = false)
     private Date dateLimite;
