@@ -23,6 +23,14 @@ public class Pret {
     @Column(name = "datePret", nullable = false)
     private Date datePret;
 
+    public TypePret getTypepret() {
+        return typepret;
+    }
+
+    public void setTypepret(TypePret typepret) {
+        this.typepret = typepret;
+    }
+
     @ManyToOne
     @JoinColumn(name = "idType", nullable = true)
     private TypePret typepret;

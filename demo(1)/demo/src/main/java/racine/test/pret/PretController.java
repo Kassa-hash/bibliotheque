@@ -67,6 +67,7 @@ public class PretController {
                                   @RequestParam Long idExemplaire,
                                   @RequestParam String datePret,
                                   @RequestParam Integer num,
+                                  @RequestParam Long idTypePret,
                                   RedirectAttributes redirectAttributes) {
 
         try {
@@ -112,27 +113,45 @@ public class PretController {
 
             // Récupération de l'exemplaire par livre et numéro
             Optional<Exemplaire> exemplaireOpt = exemplaireService.findByLivreIdAndNumero(idExemplaire, num);
+            Optional<TypePret> typePretOpt=typePretService.getTypePretById(idTypePret);
             if (!exemplaireOpt.isPresent()) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Exemplaire introuvable");
                 return "redirect:/prets";
             }
 
             Exemplaire exemplaire = exemplaireOpt.get();
+            TypePret typePret=typePretOpt.get();
+
 
             // Conversion de la date
             LocalDate datePretLocal = LocalDate.parse(datePret);
             Date datePretDate = Date.from(datePretLocal.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-            // Calcul de la date limite (exemple: 14 jours après le prêt)
-            LocalDate dateLimiteLocal = datePretLocal.plusDays(14);
-            Date dateLimite = Date.from(dateLimiteLocal.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
 
             // Création du prêt
             Pret pret = new Pret();
             pret.setAdherent(adherent);
             pret.setExemplaire(exemplaire);
             pret.setDatePret(datePretDate);
-            pret.setDateLimite(dateLimite);
+
+            pret.setTypepret(typePret);
+
+            if(pret.getTypepret().getId()==1)
+            {
+                double nbjours =adherent.getTypeAdherent().getCotisation();
+               Long nb=Math.round(nbjours);
+                LocalDate dateLimiteLocal = datePretLocal.plusDays(nb);
+                Date dateLimite = Date.from(dateLimiteLocal.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                pret.setDateLimite(dateLimite);
+            }
+
+            if(pret.getTypepret().getId()==2)
+            {
+                LocalDate dateLimiteLocal = datePretLocal.plusDays(1);
+                Date dateLimite = Date.from(dateLimiteLocal.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                pret.setDateLimite(dateLimite);
+            }
 
             // Enregistrement du prêt
             Pret pretEnregistre = pretService.savePret(pret);
