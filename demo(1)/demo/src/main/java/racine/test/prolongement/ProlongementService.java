@@ -31,10 +31,10 @@ public class ProlongementService {
         return prolongementRepository.findById(id);
     }
 
-//    // Récupérer les prolongements d'un prêt
-//    public List<Prolongement> getProlongementsByPret(Long idPret) {
-//        return prolongementRepository.findByIdPret(idPret);
-//    }
+//    Récupérer les prolongements d'un prêt
+    public List<Prolongement> getProlongementsByPret(Long idPret) {
+        return prolongementRepository.findByIdPret(idPret);
+    }
 
 //    // Mettre à jour un prolongement
 //    public Prolongement updateProlongement(Long id, Prolongement prolongementDetails) {

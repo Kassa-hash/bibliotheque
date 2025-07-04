@@ -13,7 +13,7 @@ public class PenaliteController {
     @Autowired
     private PenaliteService penaliteService;
 
-    @GetMapping
+    @GetMapping("penalite")
     public List<Penalite> getAllPenalites() {
         return penaliteService.getAllPenalites();
     }
@@ -25,7 +25,7 @@ public class PenaliteController {
 //                .orElse(ResponseEntity.notFound().build());
 //    }
 
-    @PostMapping
+    @PostMapping("/test")
     public Penalite createPenalite(@RequestBody Penalite penalite) {
         return penaliteService.createPenalite(penalite);
     }

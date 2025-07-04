@@ -28,16 +28,18 @@ public class PretController {
     private final LivreService livreService;
     private final ExemplaireService exemplaireService;
     private final PenaliteService penaliteService;
+    private final TypePretService typePretService;
 
 
 
     public PretController(PretService pretService, AdherentService adherentService,
-                          LivreService livreService, ExemplaireService exemplaireService, PenaliteService penaliteService) {
+                          LivreService livreService, ExemplaireService exemplaireService, PenaliteService penaliteService, TypePretService typePretService) {
         this.pretService = pretService;
         this.adherentService = adherentService;
         this.livreService = livreService;
         this.exemplaireService = exemplaireService;
         this.penaliteService = penaliteService;
+        this.typePretService = typePretService;
     }
 
     @GetMapping("/prets")
@@ -45,8 +47,11 @@ public class PretController {
         model.addAttribute("pret", new Pret());
         List<Adherent> adherents = adherentService.getAllAdherents();
         List<Livre> livres = livreService.getAllLivres();
+        List<TypePret> typePrets=typePretService.getAllTypePrets();
+
         model.addAttribute("adherents", adherents);
         model.addAttribute("livres", livres);
+        model.addAttribute("typePrets" , typePrets);
         return "prets";
     }
 
@@ -73,19 +78,19 @@ public class PretController {
 
             // Récupération de l'adhérent
             Optional<Adherent> adherentOpt = adherentService.getAdherentById(idAdherent);
-            Adherent adherent = adherentOpt.get();
             if (!adherentOpt.isPresent()) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Adhérent introuvable");
                 return "redirect:/prets";
             }
 
-            if (adherent.getFinAdhesion().isBefore(LocalDate.now()))
-            {
-                redirectAttributes.addFlashAttribute("errorMessage", "Adhésion éxpirèe, cet adhérent doit se réinscrire");
+            Adherent adherent = adherentOpt.get();
+
+            if (adherent.getFinAdhesion().isBefore(LocalDate.now())) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Adhésion expirée, cet adhérent doit se réinscrire");
                 return "redirect:/prets";
             }
 
-            List<Penalite> penalites=penaliteService.getAllPenalites();
+            List<Penalite> penalites = penaliteService.getAllPenalites();
 
             for (Penalite p : penalites) {
                 if (p.getAdherent().getId() == adherent.getId()) {
@@ -96,8 +101,12 @@ public class PretController {
                 }
             }
 
-            if (adherent.getTypeAdherent().getCota()<= adherent.getCota()){
-                redirectAttributes.addFlashAttribute("errorMessage", "Vous avez déja atteint le nombre de livre que vous pouvez preter");
+            int cotaActuel = adherent.getCota();
+
+
+            // Vérifier si l'adhérent a atteint son quota
+            if (adherent.getCota() >= adherent.getTypeAdherent().getCota()) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Vous avez déjà atteint le nombre de livres que vous pouvez emprunter");
                 return "redirect:/prets";
             }
 
@@ -120,16 +129,18 @@ public class PretController {
 
             // Création du prêt
             Pret pret = new Pret();
-            pret.setAdherent(adherentOpt.get());
+            pret.setAdherent(adherent);
             pret.setExemplaire(exemplaire);
             pret.setDatePret(datePretDate);
             pret.setDateLimite(dateLimite);
 
             // Enregistrement du prêt
             Pret pretEnregistre = pretService.savePret(pret);
-            int cota=adherent.getCota();
-            cota=cota++;
-            adherent.setCota(cota);
+
+            // Incrémenter le cota en base de données après l'enregistrement réussi
+            adherentService.updateCota(adherent.getId(),cotaActuel+1);
+
+            System.out.println("Nouveau cota pour l'adhérent " + adherent.getNom() + " " + adherent.getPrenom() + ": " + (adherent.getCota() + 1));
 
             redirectAttributes.addFlashAttribute("successMessage", "Prêt enregistré avec succès !");
             return "redirect:/prets";
@@ -139,7 +150,6 @@ public class PretController {
             return "redirect:/prets";
         }
     }
-
 
 
     /**

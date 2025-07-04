@@ -46,6 +46,7 @@ public class AdherentController {
             return "inscriptionAdherent";
         }
 
+        adherent.setCota(0);
         adherentService.saveAdherent(adherent);
         return "redirect:/membres";
     }
