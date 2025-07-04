@@ -16,11 +16,10 @@ import racine.test.penalite.PenaliteService;
 import racine.test.reservation.Reservation;
 import racine.test.reservation.ReservationService;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class PretController {
@@ -42,6 +41,33 @@ public class PretController {
         this.penaliteService = penaliteService;
         this.typePretService = typePretService;
         this.reservationService = reservationService;
+    }
+
+    private Set<LocalDate> getJoursFeries(int annee) {
+        Set<LocalDate> joursFeries = new HashSet<>();
+        joursFeries.add(LocalDate.of(annee, 1, 1));    // Nouvel An
+        joursFeries.add(LocalDate.of(annee, 5, 1));    // Fête du Travail
+        joursFeries.add(LocalDate.of(annee, 5, 8));    // Victoire 1945
+        joursFeries.add(LocalDate.of(annee, 6, 26));   // Fête Nationale
+        joursFeries.add(LocalDate.of(annee, 8, 15));   // Assomption
+        joursFeries.add(LocalDate.of(annee, 11, 1));   // Toussaint
+        joursFeries.add(LocalDate.of(annee, 11, 11));  // Armistice
+        joursFeries.add(LocalDate.of(annee, 12, 25));  // Noël
+        return joursFeries;
+    }
+
+    private LocalDate ajouterJoursOuvrables(LocalDate dateDebut, long joursOuvrables, Set<LocalDate> joursFeries) {
+        LocalDate date = dateDebut;
+        long ajout = 0;
+        while (ajout < joursOuvrables) {
+            date = date.plusDays(1);
+            if (!(date.getDayOfWeek() == DayOfWeek.SATURDAY ||
+                    date.getDayOfWeek() == DayOfWeek.SUNDAY ||
+                    joursFeries.contains(date))) {
+                ajout++;
+            }
+        }
+        return date;
     }
 
     @GetMapping("/prets")
@@ -142,7 +168,9 @@ public class PretController {
             {
                 double nbjours =adherent.getTypeAdherent().getCotisation();
                Long nb=Math.round(nbjours);
-                LocalDate dateLimiteLocal = datePretLocal.plusDays(nb);
+
+                Set<LocalDate> joursFeries = getJoursFeries(datePretLocal.getYear());
+                LocalDate dateLimiteLocal = ajouterJoursOuvrables(datePretLocal, nb, joursFeries);
                 Date dateLimite = Date.from(dateLimiteLocal.atStartOfDay(ZoneId.systemDefault()).toInstant());
                 pret.setDateLimite(dateLimite);
             }
