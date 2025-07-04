@@ -103,7 +103,7 @@ INSERT INTO type_pret (id, libelle) VALUES
 
 
 UPDATE adherent
-SET cota = 15
+SET cota = 13
 WHERE id = 40;
 
 
